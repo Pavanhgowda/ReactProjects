@@ -1,6 +1,6 @@
 import React from 'react'
-export default function TabButton({children,onSelect,displayButton}) {
+export default function TabButton({children,displayButton,...remainingprops}) {
   return (
-    <li><button className={displayButton?"active": undefined} onClick={onSelect}>{children}</button></li>
+    <li><button className={displayButton?"active": undefined} {...remainingprops}>{children}</button></li>
   )
 }
