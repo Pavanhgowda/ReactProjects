@@ -2,11 +2,13 @@ import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import NoProjectSelected from "./components/NoProjectSelected"
 import NewProject from "./components/NewProject";
+import SelectedProject from "./components/SelectedProject";
 
 function App() {
   const [projectsState,setProjectState]=useState({
     selectedProjectId:undefined,
-    projects:[]
+    projects:[],
+    tasks:[]
   });
   function handleStartAddProject()
   {
@@ -17,6 +19,18 @@ function App() {
       };
     });
   }
+  function handleTasks(taskData)
+  { const taskId=Math.random();
+    const addTasks={...taskData,taskId}
+    setProjectState(prevState=>{
+      return{
+        ...prevState,
+        tasks:[...prevState.tasks,addTasks]
+      }
+    })
+  }
+
+  console.log(projectsState.tasks);
 function handleAddProject(projectData)
 {
   setProjectState(prevState=>{
@@ -39,7 +53,29 @@ function handleCancleProject()
   })
 }
 
-  let content;
+function handleSlectedProject(id)
+{
+  setProjectState(prevState=>{
+    return{
+      ...prevState,
+      selectedProjectId:id,
+    };
+  });
+}
+
+function handleCancleTask(id)
+{
+ setProjectState(prevState=>{
+  return{
+    ...prevState,
+    tasks:prevState.tasks.filter((task)=>{task.taskId!==id}),
+  }
+ })
+}
+
+const selectedProject=projectsState.projects.find(project=>project.id===projectsState.selectedProjectId);
+
+  let content=<SelectedProject addTask1={handleTasks} removeTask1={handleCancleTask} project={selectedProject} tasks={projectsState.tasks}/>;
     if(projectsState.selectedProjectId===null)
     {
       content=<NewProject onAdd={handleAddProject} onCancle={handleCancleProject}/>
@@ -50,7 +86,7 @@ function handleCancleProject()
     }
   return (
     <main className="h-screen my-8 flex gap-8">
-    <Sidebar onStartAddProject={handleStartAddProject} allprojects={projectsState.projects}/>
+    <Sidebar onStartAddProject={handleStartAddProject} allprojects={projectsState.projects} onSelectProject={handleSlectedProject} />
     {content}
     </main>
   );
